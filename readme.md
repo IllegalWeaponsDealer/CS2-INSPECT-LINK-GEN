@@ -11,9 +11,7 @@ This utility script converts a `CEconItemPreviewDataBlock` protobuf from CS:GO o
 
 ## Installation  
 
-Install the required dependencies:  
-`npm install`   
-`crc protobufjs`
+`npm install serialize-item-preview`
 
 ## Example use  
 ```
