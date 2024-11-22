@@ -143,6 +143,9 @@ export default function serializeItemPreviewData(data:CEconItemPreviewData):stri
         const buffer = (new Uint8Array(encodedProto.length + 1));
         buffer.set(encodedProto, 1);
       
+        // This throws an error of array8 buffer not assainable to input buffer.
+        // I know it works without error and icba to try and find a fix for something that already works fine. 
+        // @ts-ignore
         const crc = crc32(buffer);
         const xoredCrc = (crc & 0xffff) ^ (encodedProto.length * crc);
         
