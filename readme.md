@@ -49,7 +49,7 @@ console.log("csgo_econ_action_preview", encodedProto);
 [Github](https://github.com/DoctorMcKay/)  
 [Website](https://dev.doctormckay.com/)
 
-- CashTrader-Pro and Monkeybizzcs also had alot of code around how this subject
+- CashTrader-Pro and Monkeybizzcs also had alot of code around this subject
 
 [Twitter](https://x.com/MonkeyBizzCS)  
 [Github](https://github.com/CashTrader-Pro/cs2-gen/tree/main)
