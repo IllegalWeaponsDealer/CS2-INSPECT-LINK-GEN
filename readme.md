@@ -1,5 +1,7 @@
 # Serialize Item Preview Data  
 
+# !PLANS TO ADD A DESERIALIZE FUNCTION ARE IN PROGRESS, IF YOU ALREADY HAVE SOME INFOMATION FEEL FREE TO SHARE  
+
 ## Overview  
 This utility script converts a `CEconItemPreviewDataBlock` protobuf from CS:GO or CS2 into a serialized string. The resulting string can then be used in:  
 
@@ -11,23 +13,25 @@ This utility script converts a `CEconItemPreviewDataBlock` protobuf from CS:GO o
 
 ## Installation  
 
-`npm install serialize-item-preview`
+`npm install cs-inspect-serializer`
 
 ## Example use  
 ```
-import serializeItemPreviewData from "./serializeItemPreviewData.ts"; // Or your own path
+import InspectSerializer from "cs-inspect-serializer"
 
-const encodedProto = serializeItemPreviewData({
-    rarity: -10,
-    defindex: 7,
-    paintindex: 44,
-    quality: 9, // Ensure this is 9 (Strange) for StatTrak naming
-    paintwear: 0.00696969696969,
-    paintseed: 661,
-    killeaterscoretype: 0,
-    killeatervalue: 420,
-    origin: 8
+const proto = await InspectSerializer.serialize({
+  rarity:-10,
+  defindex: 7,
+  paintindex: 44,
+  quality: 9,
+  paintwear: 0.00696969696969,
+  paintseed: 661,
+  killeaterscoretype: 0,
+  killeatervalue: 420,
+  origin: 8,
 });
+
+console.log("csgo_econ_action_preview", proto);
 
 // Generates a Stattrak ak-47 case hardened 661
 

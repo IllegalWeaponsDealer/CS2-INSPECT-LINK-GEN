@@ -59,101 +59,103 @@ interface CEconItemPreviewData { // Keys with optional chaining and | null for d
  * @param data - The preview data of type `CEconItemPreviewData` used to generate the serialized data.
  * @returns A serialized string that represents the inspect command data.
 */
-export default function serializeItemPreviewData(data:CEconItemPreviewData):string {
-    try {
-        const itemFields: { key: keyof CEconItemPreviewData, type:string, wireType:number}[] = [
-            { key: "accountid", type: "uint32", wireType: 8 },
-            { key: "itemid", type: "uint64", wireType: 16 },
-            { key: "defindex", type: "uint32", wireType: 24 },
-            { key: "paintindex", type: "uint32", wireType: 32 },
-            { key: "rarity", type: "uint32", wireType: 40 },
-            { key: "quality", type: "uint32", wireType: 48 },
-            { key: "paintwear", type: "uint32", wireType: 56 },
-            { key: "paintseed", type: "uint32", wireType: 64 },
-            { key: "killeaterscoretype", type: "uint32", wireType: 72 },
-            { key: "killeatervalue", type: "uint32", wireType: 80 },
-            { key: "customname", type: "string", wireType: 90 },
-            { key: "inventory", type: "uint32", wireType: 104 },
-            { key: "origin", type: "uint32", wireType: 112 },
-            { key: "questid", type: "uint32", wireType: 120 },
-            { key: "dropreason", type: "uint32", wireType: 128 },
-            { key: "musicindex", type: "uint32", wireType: 136 },
-            { key: "entindex", type: "int32", wireType: 144 },
-            { key: "petindex", type: "uint32", wireType: 152 },
-        ];
-    
-        const writer:Writer = Writer.create();
-    
-        if(data.paintwear) { // PaintWear/float needs to be converted to a UInt32.
-            data.paintwear = Buffer.from(new Float32Array([data.paintwear]).buffer).readUInt32LE(0)
-        }
-    
-        for(const field of itemFields) {
-            if(data[field.key] != null){
-                (writer as any).uint32(field.wireType)[field.type](data[field.key]);
-            }
-        }
-    
-        if (data.stickers || data.keychains) {
-            const stickerFields: { key: keyof Sticker, type: string, wireType: number }[] = [
-              { key: "slot", type: "uint32", wireType: 8 },
-              { key: "sticker_id", type: "uint32", wireType: 16 },
-              { key: "wear", type: "float", wireType: 29 },
-              { key: "scale", type: "float", wireType: 37 },
-              { key: "rotation", type: "float", wireType: 45 },
-              { key: "tint_id", type: "uint32", wireType: 48 },
-              { key: "offset_x", type: "float", wireType: 61 },
-              { key: "offset_y", type: "float", wireType: 69 },
-              { key: "offset_z", type: "float", wireType: 77 },
-              { key: "pattern", type: "uint32", wireType: 80 },
+export default class InspectLink {
+    serializeItemPreviewData = async(data:CEconItemPreviewData):Promise<string> => {
+        try {
+            const itemFields: { key: keyof CEconItemPreviewData, type:string, wireType:number}[] = [
+                { key: "accountid", type: "uint32", wireType: 8 },
+                { key: "itemid", type: "uint64", wireType: 16 },
+                { key: "defindex", type: "uint32", wireType: 24 },
+                { key: "paintindex", type: "uint32", wireType: 32 },
+                { key: "rarity", type: "uint32", wireType: 40 },
+                { key: "quality", type: "uint32", wireType: 48 },
+                { key: "paintwear", type: "uint32", wireType: 56 },
+                { key: "paintseed", type: "uint32", wireType: 64 },
+                { key: "killeaterscoretype", type: "uint32", wireType: 72 },
+                { key: "killeatervalue", type: "uint32", wireType: 80 },
+                { key: "customname", type: "string", wireType: 90 },
+                { key: "inventory", type: "uint32", wireType: 104 },
+                { key: "origin", type: "uint32", wireType: 112 },
+                { key: "questid", type: "uint32", wireType: 120 },
+                { key: "dropreason", type: "uint32", wireType: 128 },
+                { key: "musicindex", type: "uint32", wireType: 136 },
+                { key: "entindex", type: "int32", wireType: 144 },
+                { key: "petindex", type: "uint32", wireType: 152 },
             ];
-    
-            if(data.stickers != null){
-                for(const sticker of data.stickers) {
-                    const stickerWriter:Writer = writer.uint32(/* id 12, wireType 2 =*/98).fork();
-                    
-                    for (const field of stickerFields) {      
-                        if (sticker[field.key] != null) {
-                            (stickerWriter as any)[field.type](field.wireType)[field.type](sticker[field.key]);
-                        }
-                    }
-            
-                    stickerWriter.ldelim();
-                };
-            };
-    
-            if(data.keychains != null){
-                for(const keychain of data.keychains) {
-                    const stickerWriter:Writer = writer.uint32(/* id 12, wireType 2 =*/162).fork();
-               
-                    for (const field of stickerFields) {
-                        if (keychain[field.key] != null) {
-                            (stickerWriter as any).uint32(field.wireType)[field.type](keychain[field.key]);
-                        }
-                    }
-            
-                    stickerWriter.ldelim();
-                };
-            }
-        }
-                    
-        // Proto needs to be checksummed or it wont work.
-        const encodedProto = writer.finish();
-    
-        const buffer = (new Uint8Array(encodedProto.length + 1));
-        buffer.set(encodedProto, 1);
-      
-        // This throws an error of array8 buffer not assainable to input buffer.
-        // I know it works without error and icba to try and find a fix for something that already works fine. 
-        // @ts-ignore
-        const crc = crc32(buffer);
-        const xoredCrc = (crc & 0xffff) ^ (encodedProto.length * crc);
         
-        const checksumBytes = new Uint8Array(4);
-        new DataView(checksumBytes.buffer).setUint32(0, xoredCrc, false);
-    
-        return [...buffer, ...checksumBytes].map(byte => byte.toString(16).padStart(2, "0")).join("").toUpperCase();
-    } catch (error:any) {
-        throw new Error(`Failed to serialize item preview data, an error occured: ${error?.message}`);   
+            const writer:Writer = Writer.create();
+        
+            if(data.paintwear) { // PaintWear/float needs to be converted to a UInt32.
+                data.paintwear = Buffer.from(new Float32Array([data.paintwear]).buffer).readUInt32LE(0)
+            }
+        
+            for(const field of itemFields) {
+                if(data[field.key] != null){
+                    (writer as any).uint32(field.wireType)[field.type](data[field.key]);
+                }
+            }
+        
+            if (data.stickers || data.keychains) {
+                const stickerFields: { key: keyof Sticker, type: string, wireType: number }[] = [
+                  { key: "slot", type: "uint32", wireType: 8 },
+                  { key: "sticker_id", type: "uint32", wireType: 16 },
+                  { key: "wear", type: "float", wireType: 29 },
+                  { key: "scale", type: "float", wireType: 37 },
+                  { key: "rotation", type: "float", wireType: 45 },
+                  { key: "tint_id", type: "uint32", wireType: 48 },
+                  { key: "offset_x", type: "float", wireType: 61 },
+                  { key: "offset_y", type: "float", wireType: 69 },
+                  { key: "offset_z", type: "float", wireType: 77 },
+                  { key: "pattern", type: "uint32", wireType: 80 },
+                ];
+        
+                if(data.stickers != null){
+                    for(const sticker of data.stickers) {
+                        const stickerWriter:Writer = writer.uint32(/* id 12, wireType 2 =*/98).fork();
+                        
+                        for (const field of stickerFields) {      
+                            if (sticker[field.key] != null) {
+                                (stickerWriter as any)[field.type](field.wireType)[field.type](sticker[field.key]);
+                            }
+                        }
+                
+                        stickerWriter.ldelim();
+                    };
+                };
+        
+                if(data.keychains != null){
+                    for(const keychain of data.keychains) {
+                        const stickerWriter:Writer = writer.uint32(/* id 12, wireType 2 =*/162).fork();
+                   
+                        for (const field of stickerFields) {
+                            if (keychain[field.key] != null) {
+                                (stickerWriter as any).uint32(field.wireType)[field.type](keychain[field.key]);
+                            }
+                        }
+                
+                        stickerWriter.ldelim();
+                    };
+                }
+            }
+                        
+            // Proto needs to be checksummed or it wont work.
+            const encodedProto = writer.finish();
+        
+            const buffer = (new Uint8Array(encodedProto.length + 1));
+            buffer.set(encodedProto, 1);
+          
+            // This throws an error of array8 buffer not assainable to input buffer.
+            // I know it works without error and icba to try and find a fix for something that already works fine. 
+            // @ts-ignore
+            const crc = crc32(buffer);
+            const xoredCrc = (crc & 0xffff) ^ (encodedProto.length * crc);
+            
+            const checksumBytes = new Uint8Array(4);
+            new DataView(checksumBytes.buffer).setUint32(0, xoredCrc, false);
+        
+            return ([...buffer, ...checksumBytes].map(byte => byte.toString(16).padStart(2, "0")).join("").toUpperCase());
+        } catch (error:any) {
+            throw new Error(`Failed to serialize item preview data, an error occured: ${error?.message}`);   
+        }
     }
 }
