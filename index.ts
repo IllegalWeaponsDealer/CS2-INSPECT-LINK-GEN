@@ -56,11 +56,11 @@ interface CEconItemPreviewData { // Keys with optional chaining and | null for d
  * - Inspect links
  *   `steam://rungame/730/76561202255233023/+csgo_econ_action_preview 001807202C28F6FFFFFF0F3009388EC491DF03409505480050A4037008420FC456`
  *
- * @param data - The preview data of type `CEconItemPreviewData` used to generate the serialized data.
- * @returns A serialized string that represents the inspect command data.
+ * @param {CEconItemPreviewData} - The preview data of type `CEconItemPreviewData` used to generate the serialized data.
+ * @returns {string} A serialized string that represents the inspect command data.
 */
-export default class InspectLink {
-    serializeItemPreviewData = async(data:CEconItemPreviewData):Promise<string> => {
+export default class InspectSerializer {
+    static serialize = async(data:CEconItemPreviewData): Promise<string> => {
         try {
             const itemFields: { key: keyof CEconItemPreviewData, type:string, wireType:number}[] = [
                 { key: "accountid", type: "uint32", wireType: 8 },

@@ -34,8 +34,6 @@ const proto = await InspectSerializer.serialize({
 console.log("csgo_econ_action_preview", proto);
 
 // Generates a Stattrak ak-47 case hardened 661
-
-console.log("csgo_econ_action_preview", encodedProto);
 ```
 
 ## Notes
