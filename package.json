@@ -1,6 +1,6 @@
 {
   "name": "cs-inspect-serializer",
-  "version": "1.0.2",
+  "version": "1.0.22",
   "description": "This utility script converts a `CEconItemPreviewDataBlock` protobuf from CS:GO or CS2 into a serialized string. The resulting string can then be used in:",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -27,10 +27,8 @@
   "homepage": "https://github.com/IllegalWeaponsDealer/CS2-INSPECT-LINK-GEN#readme",
   "dependencies": {
     "crc": "^4.3.2",
-    "cs-inspect": "file:",
     "cs-inspect-serializer": "file:",
-    "protobufjs": "^7.4.0",
-    "serialize-item-preview": "file:"
+    "protobufjs": "^7.4.0"
   },
   "devDependencies": {
     "tsup": "^8.3.5",
