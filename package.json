@@ -1,6 +1,6 @@
 {
   "name": "cs-inspect-serializer",
-  "version": "1.0.5",
+  "version": "1.0.51",
   "description": "This utility script converts a `CEconItemPreviewDataBlock` protobuf from CS:GO or CS2 into a serialized string. The resulting string can then be used in:",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
