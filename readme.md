@@ -37,5 +37,8 @@ This utility script converts or decodes a `CEconItemPreviewDataBlock` protobuf f
 - CashTrader-Pro / Monkeybizzcs also had the protobuff js file.  
 They also have a similar module for C# [here](https://github.com/CashTrader-Pro/cs2-gen)
 
+1.0.6 , Generated and updated the protobuf file from mckays node-globaloffensive.  
+https://github.com/DoctorMcKay/node-globaloffensive/tree/master 
+
 [Twitter](https://x.com/MonkeyBizzCS)  
 [Github](https://github.com/CashTrader-Pro/cs2-gen/tree/main)

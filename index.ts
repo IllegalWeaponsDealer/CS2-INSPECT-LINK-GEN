@@ -3,14 +3,14 @@ import { CEconItemPreviewDataBlock } from "./CEconItemPreviewDataBlock"
 
 interface Sticker {
     slot?:number | null
-    stickerId?:number | null
+    sticker_id?:number | null
     wear?:number | null
     scale?:number | null
     rotation?:number | null
     tintId?:number | null
-    offsetX?:number | null
-    offsetY?:number | null
-    offsetZ?:number | null 
+    offset_x?:number | null
+    offset_y?:number | null
+    offset_z?:number | null 
     pattern?:number | null
 }
 
